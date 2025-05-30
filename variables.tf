@@ -25,6 +25,13 @@ variable "server_port" {
 
 }
 
+variable "server_port_apache" {
+  default     = 80
+  description = "The port that the apache server will use to handle HTTP requests"
+  type        = number
+
+}
+
 variable "ssh_port" {
   default     = 22
   description = "The port that the server will use to handle ssh requests"

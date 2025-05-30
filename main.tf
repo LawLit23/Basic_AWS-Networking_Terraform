@@ -122,26 +122,6 @@ resource "aws_nat_gateway" "nat_gw" {
 
 #---------------------------------------------------------------------------------------
 
-# # #EC2 instances
-# resource "aws_instance" "web" {
-#   ami                         = var.os
-#   instance_type               = var.size
-#   vpc_security_group_ids      = [aws_security_group.web8080.id] # Needs to link resource to Security group
-#   subnet_id                   = aws_subnet.public_subnet.id
-#   associate_public_ip_address = true
-#   key_name                    = aws_key_pair.My_auth.id
-
-#   user_data = <<-EOF
-#   #!/bin/bash
-#   echo "Hello, World" > index.html
-#   nohup busybox httpd -f -p ${var.server_port} &
-#   EOF
-
-#   tags = {
-#     Name = var.tag
-#   }
-
-# }
 
 # Launch configuration
 
@@ -183,18 +163,6 @@ resource "aws_nat_gateway" "nat_gw" {
 
 
 
-
-
-# # Key Pair
-
-# resource "aws_key_pair" "My_auth" {
-#   key_name   = var.key_name
-#   public_key = file(var.public_key)
-#   tags = {
-#     Name = "My_auth"
-#   }
-# }
-
 # #S3 Bucket
 
 
@@ -214,6 +182,14 @@ resource "aws_security_group" "web" {
     description = "web traffic from VPC"
     from_port   = var.server_port
     to_port     = var.server_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "web traffic from VPC"
+    from_port   = var.server_port_apache
+    to_port     = var.server_port_apache
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

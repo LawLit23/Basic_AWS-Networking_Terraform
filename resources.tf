@@ -17,11 +17,7 @@ resource "aws_instance" "web" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.my_auth.id
 
-  user_data = <<-EOF
-  #!/bin/bash
-  echo "Hello, World" > index.html
-  nohup busybox httpd -f -p ${var.server_port} &
-  EOF
+  user_data = file("userdata.tpl")
 
   tags = {
     Name = var.tag
