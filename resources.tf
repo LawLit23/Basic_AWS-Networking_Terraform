@@ -16,6 +16,7 @@ resource "aws_instance" "web" {
   subnet_id                   = aws_subnet.public_subnet1.id
   associate_public_ip_address = true
   key_name                    = aws_key_pair.my_auth.id
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name # Attaching role to EC2 Instance
 
   user_data = file("userdata.tpl")
 
