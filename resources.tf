@@ -1,0 +1,29 @@
+# Key Pair
+resource "aws_key_pair" "my_auth" {
+  key_name   = var.key_name
+  public_key = file(var.public_key)
+  tags = {
+    Name = "my_auth"
+  }
+}
+
+
+#EC2 instances
+resource "aws_instance" "web" {
+  ami                         = var.os
+  instance_type               = var.size
+  vpc_security_group_ids      = [aws_security_group.web.id] # Needs to link resource to Security group
+  subnet_id                   = aws_subnet.public_subnet1.id
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.my_auth.id
+
+  user_data = <<-EOF
+  #!/bin/bash
+  echo "Hello, World" > index.html
+  nohup busybox httpd -f -p ${var.server_port} &
+  EOF
+
+  tags = {
+    Name = var.tag
+  }
+}
